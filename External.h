@@ -24,6 +24,7 @@
 #include "myTimers.h"
 #include "CRC_Calc.h"
 #include "spi_driver.h"
+#include "ar1021.h"
 #include "../ComReceiver/ComReceiver.h"
 
 extern char const *Node;
@@ -52,7 +53,7 @@ extern ComReceiver cmultiRec;
 
 //typedef struct SPI_Master SPI_Master_t;
 extern SPI_Master_t spiDisplay;
-
+extern AR1021 touch;
 
 
 #endif /* EXTERNAL_H_ */

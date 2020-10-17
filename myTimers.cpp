@@ -9,17 +9,18 @@
 //10:  99.0 ms
 //101: 1000 ms
 
-volatile TIMER MyTimers[MYTIMER_NUM]= {	{TM_START,RESTART_YES,101,0,sekundenTimer},
-                                        {TM_START,RESTART_YES,10,0,led1Blinken},
-                                        {TM_STOP,RESTART_NO,50,0,led2Blinken},
-                                        {TM_START,RESTART_YES,500,0,displayOff}
+volatile TIMER MyTimers[MYTIMER_NUM]= {	{TM_START,RESTART_YES,101,0,sekundenTimer},   // TIMER_SEKUNDE
+                                        {TM_START,RESTART_YES,101,0,led1Blinken},     // TIMER_LEDBLINK1
+                                        {TM_STOP,RESTART_NO,50,0,led2Blinken},        // TIMER_LEDBLINK2
+                                        {TM_START,RESTART_YES,500,0,displayOff},      // TIMER_DISPLAY_OFF
+                                        {TM_START,RESTART_NO,101,0,NULL}             // TIMER_TOUCH
 };
 
 
 
 void led1Blinken(uint8_t test)
 {
-	LEDROT_TOGGLE;
+	LEDGRUEN_TOGGLE;
 }
 
 void led2Blinken(uint8_t test)

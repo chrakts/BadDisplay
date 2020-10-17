@@ -38,3 +38,5 @@ ComReceiver cmultiRec( &cmulti,Node,cnetCommands,NUM_COMMANDS,information,NUM_IN
 
 SPI_Master_t spiDisplay;
 
+AR1021 touch(&spiDisplay,&MyTimers[TIMER_TOUCH]);
+

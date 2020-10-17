@@ -37,6 +37,7 @@
 #include "dogGraphic.h"
 #include "timer.h"
 #include "screens.h"
+#include "ar1021.h"
 
 
 #endif /* BADDISPLAY_H_ */

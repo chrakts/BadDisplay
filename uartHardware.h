@@ -12,13 +12,13 @@
 
 /* ###################### Erster UART ############################ */
 #define  USE_RS485_0   // USB-RS232
-#undef  USE_RS485_FEEDBACK_0
-#define  USE_BUSY_0 false
+#define  USE_RS485_FEEDBACK_0
+#define  USE_BUSY_0 true
 
-#define UART_PORT_0 C
+#define UART_PORT_0 D
 #define UART_NUM_0  0
-#define TE_PIN_0    1
-#define RE_PIN_0    5
+#define TE_PIN_0    0
+#define RE_PIN_0    1
 #define TX_PIN_0    3
 #define RX_PIN_0    2
 #define USART_RXCINTLVL_0 USART_RXCINTLVL_LO_gc
