@@ -15,31 +15,17 @@
 #define LCD_USE_BACKLIGHT   1
 
 //A0 Port (CD on DOGS & DOGXL)
-//#define LCD_A0_PORT PORTC
-//#define LCD_A0_PIN  PIN3_bm
-#define LCD_A0_PORT PORTE
-#define LCD_A0_PIN  PIN0_bm
-
-
-/*
-#define PORT_A0  PORTC
-#define DDR_A0   DDRC
-#define PIN_A0   3*/
+#define LCD_A0_PORT PORTC
+#define LCD_A0_PIN  PIN3_bm
 
 //Reset Port
-//#define LCD_RST_PORT PORTA
-//#define LCD_RST_PIN  PIN5_bm
-#define LCD_RST_PORT PORTE
-#define LCD_RST_PIN  PIN1_bm
+#define LCD_RST_PORT PORTA
+#define LCD_RST_PIN  PIN5_bm
 
 //Backlight Port
 #if LCD_USE_BACKLIGHT != 0
   #define LCD_BACKL_PORT PORTE
   #define LCD_BACKL_PIN  PIN2_bm
-
-/*  #define PORT_LED PORTE
-  #define DDR_LED  DDRE
-  #define PIN_LED  2*/
 #endif
 
 //Chip select
