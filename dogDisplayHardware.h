@@ -28,11 +28,18 @@
   #define LCD_BACKL_PIN  PIN2_bm
 #endif
 
+#define LCD_SPI           (SPIC)
+#define LCD_SPI_PORT      (PORTC)
+
 //Chip select
 #if LCD_USE_CHIPSELECT == 1
   #define LCD_CS_PORT PORTC
   #define LCD_CS_PIN  PIN4_bm
 #endif
+
+#define LCD_SPI_INTLVL     SPI_INTLVL_LO_gc
+#define LCD_SPI_PRESCALER  SPI_PRESCALER_DIV128_gc
+#define LCD_SPI_CLK2       false
 
 //Define this if LCD Output should continue in next line when reaching edge of display
 //Used for all outputs. To enable this feature for text only, use the appropriate flag in font.h

@@ -31,13 +31,16 @@
 #include "ledHardware.h"
 #include "spi_driver.h"
 #include "spiHardware.h"
-#include "External.h"
 #include "xmegaClocks.h"
 #include "font.h"
 #include "dogGraphic.h"
 #include "timer.h"
 #include "screens.h"
 #include "ar1021.h"
+
+#define CLOCK_CALIBRATION 0x65
+#define SYSCLK CLK32M
+#define PLL 1
 
 
 #endif /* BADDISPLAY_H_ */

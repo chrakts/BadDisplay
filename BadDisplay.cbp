@@ -16,6 +16,7 @@
 					<Add option="-Os" />
 					<Add option="-Wall" />
 					<Add option="-std=c++14" />
+					<Add directory="spi" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -29,7 +30,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-Os" />
-			<Add option="-std=c++14" />
+			<Add option="-std=gnu++14" />
 			<Add option="-mmcu=atxmega128a4u" />
 			<Add option="-c -fpermissive" />
 			<Add option="-Wno-enum-compare" />
@@ -39,6 +40,7 @@
 			<Add option="-fpack-struct" />
 			<Add option="-funsigned-char" />
 			<Add option="-funsigned-bitfields" />
+			<Add option="-fno-threadsafe-statics" />
 			<Add option="-DF_CPU=32000000UL" />
 			<Add directory="/home/chrak/Daten/Software/repositories/BadDisplay" />
 			<Add directory="/home/chrak/Daten/Software/repositories/communication" />
@@ -95,22 +97,24 @@
 		<Unit filename="../communication/Serial.cpp" />
 		<Unit filename="../communication/Serial.h" />
 		<Unit filename="../communication/UART.h" />
-		<Unit filename="../dogDisplay/Fonts/digits_32px.c">
+		<Unit filename="../dogDisplay/Fonts/digits_32px.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../dogDisplay/Fonts/font_proportional_16px.c">
+		<Unit filename="../dogDisplay/Fonts/font_proportional_16px.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../dogDisplay/Fonts/font_proportional_8px.c">
+		<Unit filename="../dogDisplay/Fonts/font_proportional_8px.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../dogDisplay/Fonts/symbols_16px.c">
+		<Unit filename="../dogDisplay/Fonts/symbols_16px.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../dogDisplay/dogGraphic.cpp" />
 		<Unit filename="../dogDisplay/dogGraphic.h" />
 		<Unit filename="../dogDisplay/font.cpp" />
 		<Unit filename="../dogDisplay/font.h" />
+		<Unit filename="../spi/spiDevice.cpp" />
+		<Unit filename="../spi/spiDevice.h" />
 		<Unit filename="../spi/spi_driver.cpp" />
 		<Unit filename="../spi/spi_driver.h" />
 		<Unit filename="../timer/timer.cpp" />

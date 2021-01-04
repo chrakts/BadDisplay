@@ -29,6 +29,8 @@
 
 extern char const *Node;
 
+extern char     strStatusLuefterSoll[10];
+extern char     strStatusLuefterIst[10];
 extern uint8_t  u8StatusLuefterSoll;
 extern uint8_t  u8StatusLuefterIst;
 extern uint8_t  u8StatusHeizungSoll;
@@ -44,16 +46,16 @@ extern double   fFeuchteIst;
 extern double   fMqttTime;
 extern uint32_t u32SecondsCounter;
 
-
+extern uint8_t displayStatus;
+extern uint8_t oldDisplayStatus;
 
 class Communication;   // Forward declaration
 extern Communication cmulti;
 class ComReceiver;
 extern ComReceiver cmultiRec;
 
-//typedef struct SPI_Master SPI_Master_t;
 extern SPI_Master_t spiDisplay;
-extern AR1021 touch;
+extern AR1021 *pTouch;
 
 
 #endif /* EXTERNAL_H_ */

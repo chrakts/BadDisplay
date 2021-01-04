@@ -10,6 +10,8 @@
 #define MYTIMERS_H_
 
 #include "timer.h"
+#include "External.h"
+#include "myConstants.h"
 
 #define MYTIMER_NUM	5
 

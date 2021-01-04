@@ -8,6 +8,7 @@
 #define SYSCLK CLK32M
 #define PLL 1
 
+
 void setup()
 {
   LEDROT_OFF;
@@ -26,38 +27,141 @@ void setup()
   PORTE.DIRSET = 0b11111110;
 
   LEDROTSETUP; LEDGRUENSETUP; LEDRGB_BLAUSETUP; LEDRGB_ROTSETUP; LEDRGB_GRUENSETUP; BEEPERSETUP; DIMMERSETUP;
-  init_clock(SYSCLK,PLL,false,0);
-  SPI_MasterInit(&spiDisplay,&SPI_DEV,&SPI_PORT,false,SPI_MODE_0_gc,SPI_INTLVL_LO_gc,false,SPI_PRESCALER_DIV128_gc);
+  init_clock(SYSCLK, PLL,true,CLOCK_CALIBRATION);
 
 	PMIC_CTRL = PMIC_LOLVLEX_bm | PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm;
+  //SPI_MasterInit(&spiDisplay,&SPI_DEV,&SPI_PORT,false,SPI_MODE_1_gc,SPI_INTLVL_LO_gc,false,SPI_PRESCALER_DIV128_gc);
+  lcd_init();
   sei();
   init_mytimer();
 
   cmulti.open(Serial::BAUD_57600,F_CPU);
   cmulti.sendInfo("Badezimmer sagt hallo","BR");
-  lcd_init(&spiDisplay);
   lcd_set_font(FONT_PROP_8  , NORMAL);
   updateDisplayMain(true);
-  touch.setDebug(&cmulti);
-  touch.init(800,600);
+
 }
 
 int main()
 {
-char text[20];
+char text[40];
+uint8_t taste = 0,oldTaste=0;
+
   setup();
-  MyTimers[TIMER_LEDBLINK1].state = TM_START;
-  for(uint8_t i=0;i<18;i++)
+
+  AR1021 touch(&(MyTimers[TIMER_TOUCH]),SPI_INTLVL_LO_gc,false,SPI_PRESCALER_DIV128_gc);
+  pTouch = &touch;
+  pTouch->setDebug(&cmulti);
+
+  pTouch->init(4,2,true);
+  pTouch->registerDump();
+
+  LEDRGB_ROT_ON;
+
+  MyTimers[TIMER_DISPLAY_OFF].state = TM_START;
+
+  AR1021::touchCoordinate_t coord;
+
+  for(uint8_t i=0;i<8;i++)
   {
-    sprintf(text,"AR1021:%x",touch.readRegister8(i));
-    cmulti.sendInfo(text,"BR");
+    BEEPER_TOGGLE;
+    _delay_ms(50);
   }
+  BEEPER_OFF;
 
   while(1)
   {
-    updateDisplayMain(false);
+		cmultiRec.comStateMachine();
+		cmultiRec.doJob();
+    //updateDisplayMain(false);
+    pTouch->readTouchIrq();
+    taste = displayTouched();
+    if(taste>0)
+    {
+      MyTimers[TIMER_DISPLAY_OFF].state = TM_RESET;
+      switch(displayStatus)
+      {
+        case DISPLAY_SLEEP:
+          MyTimers[TIMER_DISPLAY_OFF].state = TM_START;
+          displayStatus = DISPLAY_MAIN;
+          updateDisplayMain(true);
+        break;
+        case DISPLAY_MAIN:
+          switch(taste)
+          {
+            case 5:
+              displayStatus = DISPLAY_CHOICE;
+              initDisplaySetup();
+            break;
+            case 4:
+              cmulti.sendStandard("aus","LB",'L','1','S','T');
+            break;
+            case 3:
+              cmulti.sendStandard("Auto","LB",'L','1','S','T');
+            break;
+            case 2:
+
+              if(u8StatusLuefterSoll==FAN_STATUS_1)
+              cmulti.sendStandard("Stufe 2","LB",'L','1','S','T');
+              else
+              cmulti.sendStandard("Stufe 1","LB",'L','1','S','T');
+            break;
+          }
+
+        break;
+        case DISPLAY_CHOICE:
+          switch(taste)
+          {
+            case 1:
+            case 5:
+              displayStatus = DISPLAY_MAIN;
+              updateDisplayMain(true);
+            break;
+            case 4:
+              displayStatus = DISPLAY_SETVALUE;
+              initDisplaySetValue();
+            break;
+          }
+        break;
+        case DISPLAY_SETVALUE:
+          switch(taste)
+          {
+            case 5:
+              displayStatus = DISPLAY_MAIN;
+              updateDisplayMain(true);
+          }
+        break;
+      }
+
+    }
+    switch(displayStatus)
+    {
+      case DISPLAY_SLEEP:
+        initDisplayClock(false);
+        LEDRGB_ROT_OFF;
+        if(taste>0)
+        {
+          MyTimers[TIMER_DISPLAY_OFF].state = TM_START;
+          displayStatus = DISPLAY_MAIN;
+          updateDisplayMain(true);
+        }
+      break;
+      case DISPLAY_MAIN:
+        LEDRGB_ROT_ON;
+        updateDisplayMain(false);
+      break;
+      case DISPLAY_CHOICE:
+      break;
+    }
+/*    if(pTouch->read(coord))
+    {
+      sprintf(text," --> x: %d  y: %d  t:%d <-- ",coord.x,coord.y,coord.touched );
+      cmulti.sendInfo(text,"BR");
+    }*/
+
   }
 }
+
 
 /*! \brief SPI master interrupt service routine.
  *
@@ -68,6 +172,11 @@ char text[20];
  *  Similar ISRs must be added if other SPI modules are to be used.
  */
 ISR(SPID_INT_vect)
+{
+	SPI_MasterInterruptHandler(&spiDisplay);
+}
+
+ISR(SPIC_INT_vect)
 {
 	SPI_MasterInterruptHandler(&spiDisplay);
 }

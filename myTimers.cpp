@@ -10,9 +10,9 @@
 //101: 1000 ms
 
 volatile TIMER MyTimers[MYTIMER_NUM]= {	{TM_START,RESTART_YES,101,0,sekundenTimer},   // TIMER_SEKUNDE
-                                        {TM_START,RESTART_YES,101,0,led1Blinken},     // TIMER_LEDBLINK1
-                                        {TM_STOP,RESTART_NO,50,0,led2Blinken},        // TIMER_LEDBLINK2
-                                        {TM_START,RESTART_YES,500,0,displayOff},      // TIMER_DISPLAY_OFF
+                                        {TM_STOP,RESTART_YES,101,0,led1Blinken},     // TIMER_LEDBLINK1
+                                        {TM_STOP,RESTART_YES,50,0,led2Blinken},        // TIMER_LEDBLINK2
+                                        {TM_STOP,RESTART_NO,5000,0,displayOff},      // TIMER_DISPLAY_OFF
                                         {TM_START,RESTART_NO,101,0,NULL}             // TIMER_TOUCH
 };
 
@@ -20,7 +20,7 @@ volatile TIMER MyTimers[MYTIMER_NUM]= {	{TM_START,RESTART_YES,101,0,sekundenTime
 
 void led1Blinken(uint8_t test)
 {
-	LEDGRUEN_TOGGLE;
+	LEDRGB_ROT_TOGGLE;
 }
 
 void led2Blinken(uint8_t test)
@@ -30,7 +30,9 @@ void led2Blinken(uint8_t test)
 
 void displayOff(uint8_t test)
 {
-  ;
+  displayStatus=DISPLAY_SLEEP;
+  MyTimers[TIMER_LEDBLINK1].state = TM_STOP;
+  initDisplayClock(true);
 }
 
 void sekundenTimer(uint8_t test)

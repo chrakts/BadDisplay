@@ -1,7 +1,9 @@
 #ifndef AR1021HARDWARE_H_INCLUDED
 #define AR1021HARDWARE_H_INCLUDED
 
-#define AR1021_CS_PORT       PORTB
+#define AR1021_SPI           (SPIC)
+#define AR1021_SPI_PORT      (PORTC)
+#define AR1021_CS_PORT       (PORTB)
 #define AR1021_CS            PIN3_bm
 #define AR1021_INT_PORT      PORTC
 #define AR1021_INT_PIN       PIN2_bm

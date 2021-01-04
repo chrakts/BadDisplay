@@ -18,5 +18,7 @@ extern COMMAND cnetCommands[];
 extern INFORMATION information[];
 
 void gotNewMqttTime();
-
+void gotNewStatusLuefterSoll();
+void gotNewStatusLuefterIst();
+uint8_t transformLuefterStatus(char *toTransform);
 #endif /* COMMANDFUNCTIONS_H_ */

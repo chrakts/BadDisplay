@@ -18,14 +18,14 @@ COMMAND cnetCommands[NUM_COMMANDS] =
 
 INFORMATION information[NUM_INFORMATION]=
 {
-  {"LB",'L','s','s',UINT_8,1,(void*)&u8StatusLuefterSoll,NULL},
-  {"LB",'L','a','s',UINT_8,1,(void*)&u8StatusLuefterIst,NULL},
-  {"LB",'L','1','t',FLOAT,1,(void*)&fThreshLuefter1,NULL},
-  {"LB",'L','2','t',FLOAT,1,(void*)&fThreshLuefter2,NULL},
+  {"LB",'L','1','s',STRING,8,(void*)strStatusLuefterSoll,gotNewStatusLuefterSoll},
+  {"LB",'L','1','a',STRING,8,(void*)strStatusLuefterIst,gotNewStatusLuefterIst},
+  {"LB",'L','0','L',FLOAT,1,(void*)&fThreshLuefter1,NULL},
+  {"LB",'L','0','G',FLOAT,1,(void*)&fThreshLuefter2,NULL},
   {"LB",'L','1','h',FLOAT,1,(void*)&fHystLuefter1,NULL},
   {"LB",'L','2','h',FLOAT,1,(void*)&fHystLuefter2,NULL},
-  {"LB",'T','1','a',FLOAT,1,(void*)&fTemperaturIst,NULL},
-  {"LB",'H','1','a',FLOAT,1,(void*)&fFeuchteIst,NULL},
+  {"LB",'C','1','t',FLOAT,1,(void*)&fTemperaturIst,NULL},
+  {"LB",'C','1','h',FLOAT,1,(void*)&fFeuchteIst,NULL},
   {"V1",'T','1','t',FLOAT,1,(void*)&fThreshTemp,NULL},
   {"V1",'T','1','h',FLOAT,1,(void*)&fThreshHyst,NULL},
   {"V1",'H','s','s',FLOAT,1,(void*)&u8StatusHeizungSoll,NULL},
@@ -40,6 +40,37 @@ void gotNewMqttTime()
 {
   cli();
   u32SecondsCounter = uint32_t(fMqttTime);
+  LEDRGB_GRUEN_ON;
   sei();
 }
 
+void gotNewStatusLuefterSoll()
+{
+  u8StatusLuefterSoll = transformLuefterStatus(strStatusLuefterSoll);
+}
+
+void gotNewStatusLuefterIst()
+{
+  u8StatusLuefterIst = transformLuefterStatus(strStatusLuefterIst);
+}
+
+uint8_t transformLuefterStatus(char *toTransform)
+{
+	switch(toTransform[0])
+	{
+    case 'a':
+      return FAN_STATUS_OFF;
+    break;
+    case 'S':
+      if( toTransform[6]=='1' )
+        return FAN_STATUS_1;
+      else
+        return FAN_STATUS_2;
+    break;
+    case 'A':
+      return FAN_STATUS_AUTO;
+    break;
+	}
+
+  return FAN_STATUS_AUTO;
+}
