@@ -44,8 +44,7 @@ void setup()
 
 int main()
 {
-char text[40];
-uint8_t taste = 0,oldTaste=0;
+uint8_t taste = 0;
 
   setup();
 
@@ -79,6 +78,8 @@ uint8_t taste = 0,oldTaste=0;
     if(taste>0)
     {
       MyTimers[TIMER_DISPLAY_OFF].state = TM_RESET;
+      BEEPER_ON;
+      MyTimers[TIMER_BEEP].state = TM_START;
       switch(displayStatus)
       {
         case DISPLAY_SLEEP:
@@ -117,9 +118,21 @@ uint8_t taste = 0,oldTaste=0;
               displayStatus = DISPLAY_MAIN;
               updateDisplayMain(true);
             break;
+            case 3:
+              displayStatus = DISPLAY_SETVALUE;
+              initDisplaySetValue("L2:",10.0,95.0,1.0,&fThreshLuefter2,'G');
+            break;
             case 4:
               displayStatus = DISPLAY_SETVALUE;
-              initDisplaySetValue();
+              initDisplaySetValue("L1:",10.0,95.0,1.0,&fThreshLuefter1,'L');
+            break;
+            case 7:
+              displayStatus = DISPLAY_SETVALUE;
+              initDisplaySetValue("H2:",1.0,15.0,0.5,&fHystLuefter2,'I');
+            break;
+            case 8:
+              displayStatus = DISPLAY_SETVALUE;
+              initDisplaySetValue("H1:",1.0,15.0,0.5,&fHystLuefter1,'H');
             break;
           }
         break;
@@ -129,6 +142,18 @@ uint8_t taste = 0,oldTaste=0;
             case 5:
               displayStatus = DISPLAY_MAIN;
               updateDisplayMain(true);
+            break;
+            case 6:
+              displayStatus = DISPLAY_MAIN;
+              setSetValue();
+              updateDisplayMain(true);
+            break;
+            case 7:
+              addSetValue();
+            break;
+            case 8:
+              subSetValue();
+            break;
           }
         break;
       }
