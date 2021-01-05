@@ -4,6 +4,10 @@
 #include "myConstants.h"
 #include "time.h"
 
+double *toChangeValue;
+double glbStep,glbMax,glbMin;
+double tempValue;
+char   glbJob;
 
 void updateDisplayMain(bool forceUpdate)
 {
@@ -134,11 +138,18 @@ void initDisplaySetup()
 	lcd_draw_image_P(data_Minus_bmp, 4, 32, 0);
 }
 
-void initDisplaySetValue()
+void initDisplaySetValue(const char *text,double min,double max, double step,double *oldValue,char job)
 {
+  char temp[10];
+  glbStep = step;
+  glbMin  = min;
+  glbMax  = max;
+  glbJob  = job;
+  toChangeValue = oldValue;
+  tempValue = *oldValue;
   lcd_clear_area_xy(LCD_RAM_PAGES,LCD_WIDTH,NORMAL,0,0);
   lcd_moveto_xy(0,0);
-  lcd_bar_graph_xy(2,94,0,0,32,50);
+  lcd_bar_graph_xy(2,82,0,0,32,(uint8_t)(100*(tempValue)/(max-min))); // 2. Parameter war 94
   lcd_moveto_xy(4,0);
 	lcd_draw_image_P(data_Minus_bmp, 4, 32, 0);
   lcd_moveto_xy(4,32);
@@ -149,11 +160,51 @@ void initDisplaySetValue()
 	lcd_draw_image_P(data_Minus_bmp, 4, 32, 0);
 
   lcd_moveto_xy(0,0);
-  lcd_put_string(FONT_PROP_16, 0, "L1:");
-  lcd_moveto_xy(2,32);
-  lcd_put_string(FONT_PROP_16, 0, "46.6 ");
+  lcd_put_string(FONT_PROP_16, 0, text);
+  lcd_moveto_xy(2,20);
+  sprintf(temp,"%.1f",tempValue);
+  lcd_put_string(FONT_PROP_16, 0, temp);
+  lcd_moveto_xy(2,50);
   lcd_put_string(FONT_SYMBOL_16, 0, "0");
-  lcd_put_string(FONT_PROP_16, 0, " 48.6");
+  lcd_moveto_xy(2,70);
+  lcd_put_string(FONT_PROP_16, 0, temp);
+
+}
+
+void addSetValue()
+{
+  if(tempValue+glbStep<glbMax)
+    tempValue+=glbStep;
+  else
+    tempValue = glbMax;
+  updateDisplaySetValue();
+}
+
+void subSetValue()
+{
+  if(tempValue-glbStep>glbMin)
+    tempValue-=glbStep;
+  else
+    tempValue = glbMin;
+  updateDisplaySetValue();
+}
+
+void setSetValue()
+{
+// #13DLBMeSL1LT71<4232
+
+  *toChangeValue = tempValue;
+  cmulti.sendStandardInt("LB",'L','1',glbJob,(uint8_t)tempValue);
+}
+
+void updateDisplaySetValue()
+{
+char temp[10];
+  lcd_moveto_xy(0,0);
+  lcd_bar_graph_xy(2,82,0,0,32,(uint8_t)(100*(tempValue)/(glbMax-glbMin)));
+  lcd_moveto_xy(2,70);
+  sprintf(temp,"%.1f",tempValue);
+  lcd_put_string(FONT_PROP_16, 0, temp);
 
 }
 
