@@ -20,16 +20,16 @@ INFORMATION information[NUM_INFORMATION]=
 {
   {"LB",'L','1','s',STRING,8,(void*)strStatusLuefterSoll,gotNewStatusLuefterSoll},
   {"LB",'L','1','a',STRING,8,(void*)strStatusLuefterIst,gotNewStatusLuefterIst},
-  {"LB",'L','0','L',FLOAT,1,(void*)&fThreshLuefter1,NULL},
-  {"LB",'L','0','G',FLOAT,1,(void*)&fThreshLuefter2,NULL},
-  {"LB",'L','1','h',FLOAT,1,(void*)&fHystLuefter1,NULL},
-  {"LB",'L','2','h',FLOAT,1,(void*)&fHystLuefter2,NULL},
+  {"LB",'L','1','L',FLOAT,1,(void*)&fThreshLuefter1,NULL},
+  {"LB",'L','1','G',FLOAT,1,(void*)&fThreshLuefter2,NULL},
+  {"LB",'L','1','H',FLOAT,1,(void*)&fHystLuefter1,NULL},
+  {"LB",'L','1','I',FLOAT,1,(void*)&fHystLuefter2,NULL},
   {"LB",'C','1','t',FLOAT,1,(void*)&fTemperaturIst,NULL},
   {"LB",'C','1','h',FLOAT,1,(void*)&fFeuchteIst,NULL},
   {"V1",'T','1','t',FLOAT,1,(void*)&fThreshTemp,NULL},
   {"V1",'T','1','h',FLOAT,1,(void*)&fThreshHyst,NULL},
-  {"V1",'H','s','s',FLOAT,1,(void*)&u8StatusHeizungSoll,NULL},
-  {"V1",'H','a','s',FLOAT,1,(void*)&u8StatusHeizungIst,NULL},
+  {"V1",'H','1','S',FLOAT,1,(void*)&u8StatusHeizungSoll,NULL},
+  {"V1",'H','1','S',FLOAT,1,(void*)&u8StatusHeizungIst,NULL},
   {"DT",'t','1','s',FLOAT,1,(void*)&fMqttTime,gotNewMqttTime}
 };
 
