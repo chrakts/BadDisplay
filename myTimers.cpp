@@ -13,7 +13,8 @@ volatile TIMER MyTimers[MYTIMER_NUM]= {	{TM_START,RESTART_YES,101,0,sekundenTime
                                         {TM_STOP,RESTART_YES,101,0,led1Blinken},     // TIMER_LEDBLINK1
                                         {TM_STOP,RESTART_YES,50,0,led2Blinken},        // TIMER_LEDBLINK2
                                         {TM_STOP,RESTART_NO,5000,0,displayOff},      // TIMER_DISPLAY_OFF
-                                        {TM_START,RESTART_NO,101,0,NULL}             // TIMER_TOUCH
+                                        {TM_START,RESTART_NO,101,0,NULL},             // TIMER_TOUCH
+                                        {TM_STOP,RESTART_NO,5,0,beepTimer}             // TIMER_BEEP
 };
 
 
@@ -33,6 +34,11 @@ void displayOff(uint8_t test)
   displayStatus=DISPLAY_SLEEP;
   MyTimers[TIMER_LEDBLINK1].state = TM_STOP;
   initDisplayClock(true);
+}
+
+void beepTimer(uint8_t test)
+{
+  BEEPER_OFF;
 }
 
 void sekundenTimer(uint8_t test)
