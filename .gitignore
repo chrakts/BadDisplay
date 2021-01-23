@@ -50,3 +50,5 @@ BadDisplay.layout
 *.map
 
 *.sig
+
+bin/Release/BadDisplay.fuse4

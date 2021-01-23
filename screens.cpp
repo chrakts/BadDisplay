@@ -1,5 +1,5 @@
 #include "screens.h"
-#include "Bitmap.h"
+#include "Bitmaps.h"
 
 #include "myConstants.h"
 #include "time.h"
@@ -31,20 +31,20 @@ static uint32_t altSecondsCounter;
   if(u8StatusLuefterSoll!=altStatusLuefterSoll)
   {
     lcd_moveto_xy(0,0);
-    lcd_draw_image_P(data_LuefterAus_bmp, 4, 32, u8StatusLuefterSoll==FAN_STATUS_OFF ? 4:0);
+    lcd_draw_compact_image_P(data_fanOff_cbmp, 4, 32, u8StatusLuefterSoll==FAN_STATUS_OFF ? 4:0);
     lcd_moveto_xy(0,32);
-    lcd_draw_image_P(data_LuefterAuto_bmp, 4, 32, u8StatusLuefterSoll==FAN_STATUS_AUTO ? 4:0);
+    lcd_draw_compact_image_P(data_fanAuto_cbmp, 4, 32, u8StatusLuefterSoll==FAN_STATUS_AUTO ? 4:0);
     lcd_moveto_xy(0,64);
     switch(u8StatusLuefterSoll)
     {
       case FAN_STATUS_1:
-        lcd_draw_image_P(data_Luefter1_bmp, 4, 32, 4);
+        lcd_draw_compact_image_P(data_fanSpeed_1_cbmp, 4, 32, 4);
       break;
       case FAN_STATUS_2:
-        lcd_draw_image_P(data_Luefter2_bmp, 4, 32, 4);
+        lcd_draw_compact_image_P(data_fanSpeed_2_cbmp, 4, 32, 4);
       break;
       default:
-        lcd_draw_image_P(data_Luefter1_bmp, 4, 32, 0);
+        lcd_draw_compact_image_P(data_fanSpeed_1_cbmp, 4, 32, 0);
     }
     altStatusLuefterSoll = u8StatusLuefterSoll;
   }
@@ -54,13 +54,13 @@ static uint32_t altSecondsCounter;
     switch(u8StatusHeizungSoll)
     {
       case HEAT_OFF:
-        lcd_draw_image_P(data_HeizungAus_bmp, 4, 32, 0);
+        lcd_draw_compact_image_P(data_HeizungAus_cbmp, 4, 32, 0);
       break;
       case HEAT_ON:
-        lcd_draw_image_P(data_HeizungAn_bmp, 4, 32, 0);
+        lcd_draw_compact_image_P(data_HeizungAn_cbmp, 4, 32, 0);
       break;
       default:
-        lcd_draw_image_P(data_HeizungAn_bmp, 4, 32, 4);
+        lcd_draw_compact_image_P(data_HeizungAn_cbmp, 4, 32, 4);
     }
     altStatusHeizungSoll = u8StatusHeizungSoll;
   }
@@ -123,19 +123,19 @@ void initDisplaySetup()
 {
   lcd_clear_area_xy(LCD_RAM_PAGES,LCD_WIDTH,NORMAL,0,0);
   lcd_moveto_xy(0,0);
-	lcd_draw_image_P(data_SetL1_bmp, 4, 32, 0);
+	lcd_draw_compact_image_P(data_SetL1_cbmp, 4, 32, 0);
   lcd_moveto_xy(0,32);
-	lcd_draw_image_P(data_SetL2_bmp, 4, 32, 0);
+	lcd_draw_compact_image_P(data_SetL2_cbmp, 4, 32, 0);
   lcd_moveto_xy(0,64);
-	lcd_draw_image_P(data_SetT1_bmp, 4, 32, 0);
+	lcd_draw_compact_image_P(data_SetT1_cbmp, 4, 32, 0);
   lcd_moveto_xy(4,0);
-	lcd_draw_image_P(data_SetL1H_bmp, 4, 32, 0);
+	lcd_draw_compact_image_P(data_SetL1H_cbmp, 4, 32, 0);
   lcd_moveto_xy(4,32);
-	lcd_draw_image_P(data_SetL2H_bmp, 4, 32, 0);
+	lcd_draw_compact_image_P(data_SetL2H_cbmp, 4, 32, 0);
   lcd_moveto_xy(4,64);
-	lcd_draw_image_P(data_SetT1H_bmp, 4, 32, 0);
+	lcd_draw_compact_image_P(data_SetT1H_cbmp, 4, 32, 0);
   lcd_moveto_xy(2,95);
-	lcd_draw_image_P(data_Minus_bmp, 4, 32, 0);
+	lcd_draw_compact_image_P(data_closeOutline_cbmp, 4, 32, 0);
 }
 
 void initDisplaySetValue(const char *text,double min,double max, double step,double *oldValue,char job)
@@ -151,13 +151,13 @@ void initDisplaySetValue(const char *text,double min,double max, double step,dou
   lcd_moveto_xy(0,0);
   lcd_bar_graph_xy(2,82,0,0,32,(uint8_t)(100*(tempValue)/(max-min))); // 2. Parameter war 94
   lcd_moveto_xy(4,0);
-	lcd_draw_image_P(data_Minus_bmp, 4, 32, 0);
+	lcd_draw_compact_image_P(data_minusOutline_cbmp, 4, 32, 0);
   lcd_moveto_xy(4,32);
-	lcd_draw_image_P(data_Plus_bmp, 4, 32, 0);
+	lcd_draw_compact_image_P(data_plusOutline_cbmp, 4, 32, 0);
   lcd_moveto_xy(4,64);
-	lcd_draw_image_P(data_Set_bmp, 4, 32, 0);
+	lcd_draw_compact_image_P(data_checkOutline_cbmp, 4, 32, 0);
   lcd_moveto_xy(4,95);
-	lcd_draw_image_P(data_Minus_bmp, 4, 32, 0);
+	lcd_draw_compact_image_P(data_closeOutline_cbmp, 4, 32, 0);
 
   lcd_moveto_xy(0,0);
   lcd_put_string(FONT_PROP_16, 0, text);
