@@ -1,6 +1,6 @@
 #include <avr/pgmspace.h>
 
-#include "Bitmap.h"
+#include "Bitmaps.h"
 #include "timer.h"
 #include "BadDisplay.h"
 
@@ -11,20 +11,22 @@
 
 void setup()
 {
+  PORTE.DIRSET = 0b11111110;
+  PORTE.PIN2CTRL = PORT_OPC_WIREDAND_gc;
+  DIMMER_OFF;
+  _delay_ms(50);
   LEDROT_OFF;
   LEDGRUEN_OFF;
   LEDRGB_BLAU_OFF;
   LEDRGB_GRUEN_OFF;
   LEDRGB_ROT_OFF;
   BEEPER_OFF;
-  DIMMER_OFF;
 
   PORTA.DIRSET = 0xff;
    //PIN4_bm | PIN7_bm;
   PORTB.DIRSET = 0xff;
   PORTC.DIRSET = 0b10111010;
   PORTD.DIRSET = 0b10111011;
-  PORTE.DIRSET = 0b11111110;
 
   LEDROTSETUP; LEDGRUENSETUP; LEDRGB_BLAUSETUP; LEDRGB_ROTSETUP; LEDRGB_GRUENSETUP; BEEPERSETUP; DIMMERSETUP;
   init_clock(SYSCLK, PLL,true,CLOCK_CALIBRATION);
@@ -47,6 +49,12 @@ int main()
 uint8_t taste = 0;
 
   setup();
+  for(uint8_t i=0;i<8;i++)
+  {
+    BEEPER_TOGGLE;
+    _delay_ms(50);
+  }
+  BEEPER_OFF;
 
   AR1021 touch(&(MyTimers[TIMER_TOUCH]),SPI_INTLVL_LO_gc,false,SPI_PRESCALER_DIV128_gc);
   pTouch = &touch;
@@ -61,12 +69,6 @@ uint8_t taste = 0;
 
   AR1021::touchCoordinate_t coord;
 
-  for(uint8_t i=0;i<8;i++)
-  {
-    BEEPER_TOGGLE;
-    _delay_ms(50);
-  }
-  BEEPER_OFF;
 
   while(1)
   {
@@ -77,6 +79,7 @@ uint8_t taste = 0;
     taste = displayTouched();
     if(taste>0)
     {
+      DIMMER_ON;
       MyTimers[TIMER_DISPLAY_OFF].state = TM_RESET;
       BEEPER_ON;
       MyTimers[TIMER_BEEP].state = TM_START;

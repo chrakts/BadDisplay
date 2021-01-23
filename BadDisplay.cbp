@@ -127,8 +127,8 @@
 		<Unit filename="External.h" />
 		<Unit filename="Globals.cpp" />
 		<Unit filename="ar1021Hardware.h" />
-		<Unit filename="bitmaps/Bitmap.h" />
 		<Unit filename="bitmaps/Bitmaps.cpp" />
+		<Unit filename="bitmaps/Bitmaps.h" />
 		<Unit filename="dogDisplayHardware.h" />
 		<Unit filename="ledHardware.h" />
 		<Unit filename="main.cpp" />
