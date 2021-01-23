@@ -31,6 +31,7 @@ void led2Blinken(uint8_t test)
 
 void displayOff(uint8_t test)
 {
+  DIMMER_OFF;
   displayStatus=DISPLAY_SLEEP;
   MyTimers[TIMER_LEDBLINK1].state = TM_STOP;
   initDisplayClock(true);
