@@ -4,16 +4,15 @@
 #include "myConstants.h"
 #include "time.h"
 
-double *toChangeValue;
+//double *toChangeValue;
 double glbStep,glbMax,glbMin;
 double tempValue;
-char   glbJob;
 
 void updateDisplayMain(bool forceUpdate)
 {
 char text[20];
 static uint8_t altStatusLuefterSoll,altStatusHeizungSoll,altStatusLuefterIst;
-static float   altFeuchteIst,altTemperaturIst,altThreshTemp;
+static float   altFeuchteIst,altTemperaturIst,altThreshTempDay;
 static uint32_t altSecondsCounter;
 
   if(forceUpdate)
@@ -24,7 +23,7 @@ static uint32_t altSecondsCounter;
     altStatusLuefterIst=255;
     altFeuchteIst=-1;
     altTemperaturIst=-1;
-    altThreshTemp=-1;
+    altThreshTempDay=-1;
     altSecondsCounter=0;
   }
 
@@ -54,10 +53,13 @@ static uint32_t altSecondsCounter;
     switch(u8StatusHeizungSoll)
     {
       case HEAT_OFF:
-        lcd_draw_compact_image_P(data_HeizungAus_cbmp, 4, 32, 0);
+        lcd_draw_compact_image_P(data_radiatorOff_cbmp, 4, 32, 0);
       break;
       case HEAT_ON:
-        lcd_draw_compact_image_P(data_HeizungAn_cbmp, 4, 32, 0);
+        lcd_draw_compact_image_P(data_radiator_cbmp, 4, 32, 0);
+      break;
+      case HEAT_AUTO:
+        lcd_draw_compact_image_P(data_radiatorAuto_cbmp, 4, 32, 0);
       break;
       default:
         lcd_draw_compact_image_P(data_HeizungAn_cbmp, 4, 32, 4);
@@ -74,13 +76,13 @@ static uint32_t altSecondsCounter;
     altFeuchteIst = fFeuchteIst;
   }
 
-  if( (fTemperaturIst!=altTemperaturIst) || (fThreshTemp!=altThreshTemp) )
+  if( (fTemperaturIst!=altTemperaturIst) || (fThreshTempDay!=altThreshTempDay) )
   {
     lcd_moveto_xy(7,1);
-    sprintf(text,"%.1f | %.1f%cC",fTemperaturIst,fThreshTemp,char(176));
+    sprintf(text,"H%d: %.1f %cC",u8StatusHeizungIst,fTemperaturIst,char(176));
     lcd_put_string(FONT_PROP_8, 0, text);
     altTemperaturIst = fTemperaturIst;
-    altThreshTemp = fThreshTemp;
+    altThreshTempDay = fThreshTempDay;
   }
 
   if( u32SecondsCounter-altSecondsCounter>2)
@@ -94,7 +96,7 @@ static uint32_t altSecondsCounter;
     localtime_r( &lokalTime,&info );
     strftime(text,20,"%H:%M:%S", &info);
     lcd_moveto_xy(5,72);
-    lcd_put_string(FONT_PROP_16, 0, text);
+    lcd_put_string(FONT_PROP_16, INVERT*u8StatusNight, text);
   }
 }
 
@@ -127,25 +129,26 @@ void initDisplaySetup()
   lcd_moveto_xy(0,32);
 	lcd_draw_compact_image_P(data_SetL2_cbmp, 4, 32, 0);
   lcd_moveto_xy(0,64);
-	lcd_draw_compact_image_P(data_SetT1_cbmp, 4, 32, 0);
+	lcd_draw_compact_image_P(data_radiatorDay_cbmp, 4, 32, 0);
+  lcd_moveto_xy(0,95);
+	lcd_draw_compact_image_P(data_radiatorNight_cbmp, 4, 32, 0);
   lcd_moveto_xy(4,0);
 	lcd_draw_compact_image_P(data_SetL1H_cbmp, 4, 32, 0);
   lcd_moveto_xy(4,32);
 	lcd_draw_compact_image_P(data_SetL2H_cbmp, 4, 32, 0);
   lcd_moveto_xy(4,64);
-	lcd_draw_compact_image_P(data_SetT1H_cbmp, 4, 32, 0);
-  lcd_moveto_xy(2,95);
+	lcd_draw_compact_image_P(data_radiatorHysterese_cbmp, 4, 32, 0);
+  lcd_moveto_xy(4,95);
 	lcd_draw_compact_image_P(data_closeOutline_cbmp, 4, 32, 0);
 }
 
-void initDisplaySetValue(const char *text,double min,double max, double step,double *oldValue,char job)
+void initDisplaySetValue(const char *text,double min,double max, double step,volatile double *oldValue)
 {
   char temp[10];
   glbStep = step;
   glbMin  = min;
   glbMax  = max;
-  glbJob  = job;
-  toChangeValue = oldValue;
+  //toChangeValue = oldValue;
   tempValue = *oldValue;
   lcd_clear_area_xy(LCD_RAM_PAGES,LCD_WIDTH,NORMAL,0,0);
   lcd_moveto_xy(0,0);
@@ -193,8 +196,8 @@ void setSetValue()
 {
 // #13DLBMeSL1LT71<4232
 
-  *toChangeValue = tempValue;
-  cmulti.sendStandardInt("LB",'L','1',glbJob,(uint8_t)tempValue);
+  //*toChangeValue = tempValue;
+  cmulti.sendStandardDouble(glbTarget,glbFunction,glbAddress,glbJob,tempValue);
 }
 
 void updateDisplaySetValue()
@@ -212,15 +215,12 @@ uint8_t displayTouched()
 {
 AR1021::touchCoordinate_t coord;
 uint8_t taste=0;
-char text[20];
 
   if(pTouch->read(coord))
   {
     if(coord.touched)
     {
       taste = coord.x + 4*coord.y + 1;
-      sprintf(text," --> Taste: %d  <-- ",taste );
-      cmulti.sendInfo(text,"BR");
     }
   }
   return taste;

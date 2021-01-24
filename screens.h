@@ -13,7 +13,7 @@
 void updateDisplayMain(bool forceUpdate);
 void initDisplayClock(bool forceUpdate);
 void initDisplaySetup();
-void initDisplaySetValue(const char *text,double min,double max, double step,double *oldValue,char job);
+void initDisplaySetValue(const char *text,double min,double max, double step,volatile double *oldValue);
 uint8_t displayTouched();
 void addSetValue();
 void subSetValue();

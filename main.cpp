@@ -63,20 +63,35 @@ uint8_t taste = 0;
   pTouch->init(4,2,true);
   pTouch->registerDump();
 
-  LEDRGB_ROT_ON;
 
   MyTimers[TIMER_DISPLAY_OFF].state = TM_START;
 
-  AR1021::touchCoordinate_t coord;
+  //AR1021::touchCoordinate_t coord;
 
 
   while(1)
   {
 		cmultiRec.comStateMachine();
 		cmultiRec.doJob();
-    //updateDisplayMain(false);
+
+    if(u8StatusLuefterSoll == FAN_STATUS_AUTO)
+      LEDRGB_BLAU_ON;
+    else
+      LEDRGB_BLAU_OFF;
+    if(u8StatusHeizungIst == HEAT_ON)
+    {
+      LEDRGB_ROT_ON;
+      LEDRGB_GRUEN_OFF;
+    }
+    else
+    {
+      LEDRGB_ROT_OFF;
+      LEDRGB_GRUEN_ON;
+    }
+
     pTouch->readTouchIrq();
     taste = displayTouched();
+
     if(taste>0)
     {
       DIMMER_ON;
@@ -106,36 +121,80 @@ uint8_t taste = 0;
             case 2:
 
               if(u8StatusLuefterSoll==FAN_STATUS_1)
-              cmulti.sendStandard("Stufe 2","LB",'L','1','S','T');
+                cmulti.sendStandard("Stufe 2","LB",'L','1','S','T');
               else
-              cmulti.sendStandard("Stufe 1","LB",'L','1','S','T');
+                cmulti.sendStandard("Stufe 1","LB",'L','1','S','T');
+            break;
+            case 1:
+              switch(u8StatusHeizungSoll)
+              {
+                case HEAT_OFF:
+                  cmulti.sendStandard("ein","V1",'V','0','S','T');
+                break;
+                case HEAT_ON:
+                  cmulti.sendStandard("Auto","V1",'V','0','S','T');
+                break;
+                case HEAT_AUTO:
+                  cmulti.sendStandard("aus","V1",'V','0','S','T');
+                break;
+              }
             break;
           }
 
         break;
         case DISPLAY_CHOICE:
+          strcpy(glbTarget,"LB");
+          glbFunction = 'L';
+          glbAddress  = '1';
           switch(taste)
           {
-            case 1:
-            case 5:
+            case 1: // radiator Night
+              displayStatus = DISPLAY_SETVALUE;
+              strcpy(glbTarget,"V1");
+              glbJob = 'N';
+              glbFunction = 'V';
+              glbAddress  = '0';
+              initDisplaySetValue("Na.:",10.0,40,0.2,&fThreshTempNight);
+            break;
+            case 2: // radiator Day
+              displayStatus = DISPLAY_SETVALUE;
+              strcpy(glbTarget,"V1");
+              glbJob = 'D';
+              glbFunction = 'V';
+              glbAddress  = '0';
+              initDisplaySetValue("Tag:",10.0,40,0.2,&fThreshTempDay);
+            break;
+            case 6: // radiator Hysterese
+              displayStatus = DISPLAY_SETVALUE;
+              strcpy(glbTarget,"V1");
+              glbJob = 'H';
+              glbFunction = 'V';
+              glbAddress  = '0';
+              initDisplaySetValue("Hy.:",0.1,10,0.1,&fThreshHyst);
+            break;
+            case 5: // abgebrochen
               displayStatus = DISPLAY_MAIN;
               updateDisplayMain(true);
             break;
             case 3:
               displayStatus = DISPLAY_SETVALUE;
-              initDisplaySetValue("L2:",10.0,95.0,1.0,&fThreshLuefter2,'G');
+              glbJob = 'G';
+              initDisplaySetValue("L2:",10.0,95.0,0.5,&fThreshLuefter2);
             break;
             case 4:
               displayStatus = DISPLAY_SETVALUE;
-              initDisplaySetValue("L1:",10.0,95.0,1.0,&fThreshLuefter1,'L');
+              glbJob = 'L';
+              initDisplaySetValue("L1:",10.0,95.0,0.5,&fThreshLuefter1);
             break;
             case 7:
               displayStatus = DISPLAY_SETVALUE;
-              initDisplaySetValue("H2:",1.0,15.0,0.5,&fHystLuefter2,'I');
+              glbJob = 'I';
+              initDisplaySetValue("H2:",1.0,15.0,0.5,&fHystLuefter2);
             break;
             case 8:
               displayStatus = DISPLAY_SETVALUE;
-              initDisplaySetValue("H1:",1.0,15.0,0.5,&fHystLuefter1,'H');
+              glbJob = 'H';
+              initDisplaySetValue("H1:",1.0,15.0,0.5,&fHystLuefter1);
             break;
           }
         break;
@@ -166,7 +225,6 @@ uint8_t taste = 0;
     {
       case DISPLAY_SLEEP:
         initDisplayClock(false);
-        LEDRGB_ROT_OFF;
         if(taste>0)
         {
           MyTimers[TIMER_DISPLAY_OFF].state = TM_START;
@@ -175,7 +233,6 @@ uint8_t taste = 0;
         }
       break;
       case DISPLAY_MAIN:
-        LEDRGB_ROT_ON;
         updateDisplayMain(false);
       break;
       case DISPLAY_CHOICE:
