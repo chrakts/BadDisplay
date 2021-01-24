@@ -29,22 +29,28 @@
 
 extern char const *Node;
 
-extern char     strStatusLuefterSoll[10];
-extern char     strStatusLuefterIst[10];
+extern char     strStatusLuefterSoll[8];
+extern char     strStatusLuefterIst[8];
+extern char     strStatusHeizungSoll[8];
+extern char     strStatusNight[5];
 extern uint8_t  u8StatusLuefterSoll;
 extern uint8_t  u8StatusLuefterIst;
 extern uint8_t  u8StatusHeizungSoll;
 extern uint8_t  u8StatusHeizungIst;
+extern uint8_t  u8StatusNight;
 extern volatile double   fThreshLuefter1;
 extern volatile double   fThreshLuefter2;
 extern volatile double   fHystLuefter1;
 extern volatile double   fHystLuefter2;
-extern volatile double   fThreshTemp;
+extern volatile double   fThreshTempDay;
+extern volatile double   fThreshTempNight;
 extern volatile double   fThreshHyst;
 extern volatile double   fTemperaturIst;
 extern volatile double   fFeuchteIst;
 extern volatile double   fMqttTime;
 extern volatile uint32_t u32SecondsCounter;
+
+extern char   glbTarget[3],glbFunction,glbAddress,glbJob;
 
 extern uint8_t displayStatus;
 extern uint8_t oldDisplayStatus;

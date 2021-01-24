@@ -12,13 +12,16 @@
 #include "BadDisplay.h"
 
 #define NUM_COMMANDS 10
-#define NUM_INFORMATION 13
+#define NUM_INFORMATION 15
 
 extern COMMAND cnetCommands[];
 extern INFORMATION information[];
 
+void gotNewStatusNight();
+void gotNewStatusHeizungSoll();
 void gotNewMqttTime();
 void gotNewStatusLuefterSoll();
 void gotNewStatusLuefterIst();
 uint8_t transformLuefterStatus(char *toTransform);
+uint8_t transformHeizungStatus(char *toTransform);
 #endif /* COMMANDFUNCTIONS_H_ */
