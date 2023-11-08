@@ -52,3 +52,5 @@ BadDisplay.layout
 *.sig
 
 bin/Release/BadDisplay.fuse4
+
+BadDisplay.cscope_file_list
