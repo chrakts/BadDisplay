@@ -13,8 +13,12 @@ void setup()
 {
   PORTE.DIRSET = 0b11111110;
   PORTE.PIN2CTRL = PORT_OPC_WIREDAND_gc;
-  DIMMER_OFF;
-  _delay_ms(50);
+  TCE0.CCCL = 0;
+  TCE0.CTRLA = TC_CLKSEL_DIV8_gc;
+  TCE0.CTRLB = TC0_CCCEN_bm | TC_WGMODE_SINGLESLOPE_gc;
+  TCE0.CTRLE = TC_BYTEM_BYTEMODE_gc; // Splitmode
+  TCE0.PERL = 128;
+
   LEDROT_OFF;
   LEDGRUEN_OFF;
   LEDRGB_BLAU_OFF;
@@ -28,6 +32,8 @@ void setup()
   PORTC.DIRSET = 0b10111010;
   PORTD.DIRSET = 0b10111011;
 
+
+
   LEDROTSETUP; LEDGRUENSETUP; LEDRGB_BLAUSETUP; LEDRGB_ROTSETUP; LEDRGB_GRUENSETUP; BEEPERSETUP; DIMMERSETUP;
   init_clock(SYSCLK, PLL,true,CLOCK_CALIBRATION);
 
@@ -36,9 +42,8 @@ void setup()
   lcd_init();
   sei();
   init_mytimer();
-
   cmulti.open(Serial::BAUD_57600,F_CPU);
-  cmulti.sendInfo("Badezimmer sagt hallo","BR");
+  //cmulti.sendInfo("Badezimmer sagt hallo","BR");
   lcd_set_font(FONT_PROP_8  , NORMAL);
   updateDisplayMain(true);
 
@@ -49,7 +54,7 @@ int main()
 uint8_t taste = 0;
 
   setup();
-  for(uint8_t i=0;i<8;i++)
+  for(uint8_t i=0;i<4;i++)
   {
     BEEPER_TOGGLE;
     _delay_ms(50);
@@ -61,14 +66,14 @@ uint8_t taste = 0;
   pTouch->setDebug(&cmulti);
 
   pTouch->init(4,2,true);
-  pTouch->registerDump();
+  //pTouch->registerDump();
 
 
   MyTimers[TIMER_DISPLAY_OFF].state = TM_START;
 
   //AR1021::touchCoordinate_t coord;
 
-
+  DIMMER_OFF;
   while(1)
   {
 		cmultiRec.comStateMachine();
