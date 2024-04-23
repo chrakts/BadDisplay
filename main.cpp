@@ -65,9 +65,9 @@ uint8_t taste = 0;
   pTouch = &touch;
   pTouch->setDebug(&cmulti);
 
-  pTouch->init(4,2,true);
+  pTouch->init(4,2,false);
   //pTouch->registerDump();
-
+  //pTouch->calibrateStart();
 
   MyTimers[TIMER_DISPLAY_OFF].state = TM_START;
 
